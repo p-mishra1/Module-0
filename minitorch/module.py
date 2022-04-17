@@ -22,12 +22,18 @@ class Module:
     def train(self):
         "Set the mode of this module and all descendent modules to `train`."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError('Need to implement for Task 0.4')
+        # raise NotImplementedError('Need to implement for Task 0.4')
+        self.__dict__["training"] = True
+        for module in self.modules():
+            module.train()
 
     def eval(self):
         "Set the mode of this module and all descendent modules to `eval`."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError('Need to implement for Task 0.4')
+        # raise NotImplementedError('Need to implement for Task 0.4')
+        self.__dict__["training"] = False
+        for module in self.modules():
+            module.eval()
 
     def named_parameters(self):
         """
@@ -38,12 +44,28 @@ class Module:
             list of pairs: Contains the name and :class:`Parameter` of each ancestor parameter.
         """
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError('Need to implement for Task 0.4')
+        # raise NotImplementedError('Need to implement for Task 0.4')
+        def named_parameters_help(modules, prefix=''):
+            params = []
+            for k, v in modules.__dict__["_parameters"].items():
+                params.append((prefix+k, v))
+            for key, module in modules.__dict__["_modules"].items():
+                params.extend(named_parameters_help(module, prefix+key+'.'))
+            return params    
+
+        return named_parameters_help(self)
 
     def parameters(self):
         "Enumerate over all the parameters of this module and its descendents."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError('Need to implement for Task 0.4')
+        # raise NotImplementedError('Need to implement for Task 0.4')
+        params = []
+        for _, v in self.__dict__["_parameters"].items():
+            params.append(v)
+        for module in self.modules():
+            params.extend(module.parameters())
+
+        return params
 
     def add_parameter(self, k, v):
         """
